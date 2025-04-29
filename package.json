@@ -1,0 +1,12 @@
+{
+  "name": "json-uploader",
+  "version": "1.0.0",
+  "description": "Servicio para subir JSONs desde GitHub a un servidor",
+  "main": "upload_jsons.js",
+  "dependencies": {
+    "axios": "^1.9.0"
+  },
+  "scripts": {
+    "start": "node upload_jsons.js"
+  }
+}

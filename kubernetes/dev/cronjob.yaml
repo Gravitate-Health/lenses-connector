@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: lenses-connector
+spec:
+  schedule: "0 4 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: lenses-connector
+            image: gravitate-registry.cr.de-fra.ionos.com/lenses-connector
+            env:
+            - name: SERVER_ENDPOINT
+              value: "https://gravitate-health.lst.tfo.upm.es/epi/api/fhir/Library"
+          restartPolicy: OnFailure
