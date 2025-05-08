@@ -7,4 +7,5 @@ module.exports = [
     "https://raw.githubusercontent.com/Gravitate-Health/diabetes-lens/refs/heads/main/diabetes-lens.json",
     "https://raw.githubusercontent.com/Gravitate-Health/gh-contact-lens/refs/heads/main/contact-lens.json",
     "https://raw.githubusercontent.com/Gravitate-Health/gh-questionnaire-lens/refs/heads/main/questionnaire-lens.json",
+    "https://raw.githubusercontent.com/Gravitate-Health/gh-doping-lens/refs/heads/main/doping-lens.json"
 ];
