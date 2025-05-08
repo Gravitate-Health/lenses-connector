@@ -4,5 +4,7 @@ module.exports = [
     "https://raw.githubusercontent.com/Gravitate-Health/rmm-lens/refs/heads/main/rmm-lens.json",
     "https://raw.githubusercontent.com/Gravitate-Health/allergy-and-intollerance-lens/refs/heads/main/allergy-and-intollerance-lens.json",
     "https://raw.githubusercontent.com/Gravitate-Health/interaction-lens/refs/heads/main/interaction-lens.json",
-    "https://raw.githubusercontent.com/Gravitate-Health/diabetes-lens/refs/heads/main/diabetes-lens.json"
+    "https://raw.githubusercontent.com/Gravitate-Health/diabetes-lens/refs/heads/main/diabetes-lens.json",
+    "https://raw.githubusercontent.com/Gravitate-Health/gh-contact-lens/refs/heads/main/contact-lens.json",
+    "https://raw.githubusercontent.com/Gravitate-Health/gh-questionnaire-lens/refs/heads/main/questionnaire-lens.json",
 ];
