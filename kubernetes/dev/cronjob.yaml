@@ -4,9 +4,15 @@ metadata:
   name: lenses-connector
 spec:
   schedule: "0 4 * * *"
+  suspend: false
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
   jobTemplate:
     spec:
       template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
         spec:
           containers:
           - name: lenses-connector
