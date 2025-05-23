@@ -95,6 +95,7 @@ async function fetchAndUploadJSONs() {
 fetchAndUploadJSONs()
     .then(() => {
         console.log("Todos los JSONs han sido procesados.");
+        process.exit(0); // Terminar con éxito
     })
     .catch((error) => {
         console.error("Error en la función principal:");
@@ -102,4 +103,5 @@ fetchAndUploadJSONs()
         if (error.stack) {
             console.error(`Stack: ${error.stack}`);
         }
-    });
+        process.exit(1); // Terminar con error
+});
