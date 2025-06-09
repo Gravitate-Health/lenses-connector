@@ -52,8 +52,26 @@ async function fetchAndUploadJSONs() {
                 // Verificar si el documento ya existe
                 const exists = await documentExists(jsonData);
                 if (exists) {
-                    console.log(`El documento de ${jsonUrl} ya existe en el servidor. Omitiendo.`);
-                    continue;
+                    console.log(`El documento de ${jsonUrl} ya existe en el servidor. Actualizando.`);
+                    const identifierValue = jsonData.identifier[0].value;
+                    const searchUrl = `${SERVER_ENDPOINT}?identifier=${identifierValue}`;
+                    const response = await axios.get(searchUrl);
+
+                    if (response.data && response.data.total > 0) {
+                        jsonData.id = response.data.entry[0].resource.id;
+                    }
+                    console.log(`Intentando actualizar el endpoint: ${SERVER_ENDPOINT} con id: ${jsonData.id}`);
+                    const updateResponse = await axios.put(SERVER_ENDPOINT + `/${jsonData.id}`, jsonData, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (updateResponse.status === 200 || updateResponse.status === 201) {
+                        console.log(`JSON actualizado exitosamente en ${SERVER_ENDPOINT}`);
+                    } else {
+                        console.error(`Error al actualizar JSON desde ${jsonUrl}: Status ${updateResponse.status}`);
+                        console.error(`Respuesta del servidor: ${JSON.stringify(updateResponse)}`);
+                    }
                 }
                 
                 console.log(`El documento no existe en el servidor. Procediendo a subirlo.`);
