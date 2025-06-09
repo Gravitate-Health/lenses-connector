@@ -3,36 +3,36 @@ const jsonUrls = require('./json_urls');
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT || "http://gravitate-health.lst.tfo.upm.es/epi/api/fhir/Library";
 
 if (!SERVER_ENDPOINT) {
-    console.error("SERVER_ENDPOINT no está configurado.");
+    console.error("SERVER_ENDPOINT is not configured.");
     process.exit(1);
 }
 
 async function documentExists(document) {
     try {
         if (!document.identifier[0].value) {
-            console.warn('El documento no tiene identifier.value, no se puede comprobar si existe');
-            return true; // No queremos subir documentos sin identifier
+            console.warn('Document has no identifier.value, cannot check if it exists');
+            return true; // We don't want to upload documents without identifier
         }
 
         const identifierValue = document.identifier[0].value;
         
-        // Buscar el documento en el servidor usando el valor del identifier
+        // Search for the document on the server using the identifier value
         const searchUrl = `${SERVER_ENDPOINT}?identifier=${identifierValue}`;
-        console.log(`Verificando existencia con: ${searchUrl}`);
+        console.log(`Checking existence with: ${searchUrl}`);
         
         const response = await axios.get(searchUrl);
         
-        // En FHIR, la respuesta incluye un bundle con total de resultados
+        // In FHIR, the response includes a bundle with total results
         if (response.data && response.data.total > 0) {
-            console.log(`Encontrado documento con identifier.value = ${identifierValue}`);
+            console.log(`Found document with identifier.value = ${identifierValue}`);
             return true;
         }
         
-        console.log(`No se encontró documento con identifier.value = ${identifierValue}`);
+        console.log(`No document found with identifier.value = ${identifierValue}`);
         return false;
     } catch (error) {
-        console.error(`Error al verificar si existe el documento con identifier.value:`, error.message);
-        // Si hay un error, asumimos que el documento no existe
+        console.error(`Error checking if document exists with identifier.value:`, error.message);
+        // If there's an error, we assume the document doesn't exist
         return false;
     }
 }
@@ -41,18 +41,18 @@ async function fetchAndUploadJSONs() {
     try {
         for (const jsonUrl of jsonUrls) {
             try {
-                console.log(`Procesando: ${jsonUrl}`);
+                console.log(`Processing: ${jsonUrl}`);
 
-                // Obtener el JSON desde la URL
+                // Get the JSON from the URL
                 const response = await axios.get(jsonUrl);
                 const jsonData = response.data;
                 
-                console.log(`JSON obtenido correctamente desde ${jsonUrl}`);
+                console.log(`JSON obtained successfully from ${jsonUrl}`);
                 
-                // Verificar si el documento ya existe
+                // Verify if the document already exists
                 const exists = await documentExists(jsonData);
                 if (exists) {
-                    console.log(`El documento de ${jsonUrl} ya existe en el servidor. Actualizando.`);
+                    console.log(`Document from ${jsonUrl} already exists on server. Updating.`);
                     const identifierValue = jsonData.identifier[0].value;
                     const searchUrl = `${SERVER_ENDPOINT}?identifier=${identifierValue}`;
                     const response = await axios.get(searchUrl);
@@ -60,24 +60,24 @@ async function fetchAndUploadJSONs() {
                     if (response.data && response.data.total > 0) {
                         jsonData.id = response.data.entry[0].resource.id;
                     }
-                    console.log(`Intentando actualizar el endpoint: ${SERVER_ENDPOINT} con id: ${jsonData.id}`);
+                    console.log(`Attempting to update endpoint: ${SERVER_ENDPOINT} with id: ${jsonData.id}`);
                     const updateResponse = await axios.put(SERVER_ENDPOINT + `/${jsonData.id}`, jsonData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
                     if (updateResponse.status === 200 || updateResponse.status === 201) {
-                        console.log(`JSON actualizado exitosamente en ${SERVER_ENDPOINT}`);
+                        console.log(`JSON updated successfully at ${SERVER_ENDPOINT}`);
                     } else {
-                        console.error(`Error al actualizar JSON desde ${jsonUrl}: Status ${updateResponse.status}`);
-                        console.error(`Respuesta del servidor: ${JSON.stringify(updateResponse)}`);
+                        console.error(`Error updating JSON from ${jsonUrl}: Status ${updateResponse.status}`);
+                        console.error(`Server response: ${JSON.stringify(updateResponse)}`);
                     }
                 }
                 
-                console.log(`El documento no existe en el servidor. Procediendo a subirlo.`);
-                console.log(`Intentando subir al endpoint: ${SERVER_ENDPOINT}`);
+                console.log(`Document does not exist on server. Proceeding to upload.`);
+                console.log(`Attempting to upload to endpoint: ${SERVER_ENDPOINT}`);
 
-                // Subir el JSON al servidor
+                // Upload the JSON to the server
                 const uploadResponse = await axios.post(SERVER_ENDPOINT, jsonData, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -85,25 +85,25 @@ async function fetchAndUploadJSONs() {
                 });
 
                 if (uploadResponse.status === 200 || uploadResponse.status === 201) {
-                    console.log(`JSON subido exitosamente a ${SERVER_ENDPOINT}`);
+                    console.log(`JSON uploaded successfully to ${SERVER_ENDPOINT}`);
                 } else {
-                    console.error(`Error al subir JSON desde ${jsonUrl}: Status ${uploadResponse.status}`);
-                    console.error(`Respuesta del servidor: ${JSON.stringify(uploadResponse)}`);
+                    console.error(`Error uploading JSON from ${jsonUrl}: Status ${uploadResponse.status}`);
+                    console.error(`Server response: ${JSON.stringify(uploadResponse)}`);
                 }
             } catch (urlError) {
-                console.error(`Error procesando ${jsonUrl}:`);
-                console.error(`Mensaje: ${urlError.message}`);
+                console.error(`Error processing ${jsonUrl}:`);
+                console.error(`Message: ${urlError.message}`);
                 if (urlError.response) {
                     console.error(`Status: ${urlError.response.status}`);
                     console.error(`Data: ${JSON.stringify(urlError.response.data)}`);
                 }
-                // Continuamos con la siguiente URL aunque haya error
+                // Continue with the next URL even if there's an error
                 continue;
             }
         }
     } catch (error) {
-        console.error("Error general durante la subida de JSON:");
-        console.error(`Mensaje: ${error.message}`);
+        console.error("General error during JSON upload:");
+        console.error(`Message: ${error.message}`);
         if (error.stack) {
             console.error(`Stack: ${error.stack}`);
         }
@@ -112,12 +112,12 @@ async function fetchAndUploadJSONs() {
 
 fetchAndUploadJSONs()
     .then(() => {
-        console.log("Todos los JSONs han sido procesados.");
+        console.log("All JSONs have been processed.");
         process.exit(0); // Terminar con éxito
     })
     .catch((error) => {
-        console.error("Error en la función principal:");
-        console.error(`Mensaje: ${error.message}`);
+        console.error("Error in main function:");
+        console.error(`Message: ${error.message}`);
         if (error.stack) {
             console.error(`Stack: ${error.stack}`);
         }
