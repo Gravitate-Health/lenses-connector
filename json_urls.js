@@ -10,6 +10,7 @@ module.exports = [
     "https://raw.githubusercontent.com/Gravitate-Health/gh-doping-lens/refs/heads/main/doping-lens.json",
     "https://raw.githubusercontent.com/Gravitate-Health/gh-med-lab-lens/refs/heads/main/qt-prolongation-lens.json",
     "https://raw.githubusercontent.com/joofio/gh-preadmission-lens/refs/heads/main/preadmission-lens.json",
-    "https://raw.githubusercontent.com/joofio/gh-community-lens/refs/heads/main/community-lens.json"
+    "https://raw.githubusercontent.com/joofio/gh-community-lens/refs/heads/main/community-lens.json",
+    "https://raw.githubusercontent.com/Gravitate-Health/conditions-lens/refs/heads/main/conditions-lens.json"
     
 ];
