@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker build -t gravitate-registry.cr.de-fra.ionos.com/lenses-connector:latest .
+docker build -t ghcr.io/gravitate-health/lenses-connector:latest .
 
-docker push gravitate-registry.cr.de-fra.ionos.com/lenses-connector:latest
+docker push ghcr.io/gravitate-health/lenses-connector:latest
 

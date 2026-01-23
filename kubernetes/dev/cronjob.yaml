@@ -16,7 +16,7 @@ spec:
         spec:
           containers:
           - name: lenses-connector
-            image: gravitate-registry.cr.de-fra.ionos.com/lenses-connector:latest
+            image: ghcr.io/gravitate-health/lenses-connector:latest
             env:
             - name: SERVER_ENDPOINT
               value: "http://gravitate-health.lst.tfo.upm.es/epi/api/fhir/Library"
