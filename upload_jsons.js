@@ -38,6 +38,7 @@ async function documentExists(document) {
 }
 
 async function fetchAndUploadJSONs() {
+    let allSuccessful = true;
     try {
         for (const jsonUrl of jsonUrls) {
             try {
@@ -91,6 +92,7 @@ async function fetchAndUploadJSONs() {
                     console.error(`Server response: ${JSON.stringify(uploadResponse)}`);
                 }
             } catch (urlError) {
+                allSuccessful = false;
                 console.error(`Error processing ${jsonUrl}:`);
                 console.error(`Message: ${urlError.message}`);
                 if (urlError.response) {
@@ -102,18 +104,25 @@ async function fetchAndUploadJSONs() {
             }
         }
     } catch (error) {
+        allSuccessful = false;
         console.error("General error during JSON upload:");
         console.error(`Message: ${error.message}`);
         if (error.stack) {
             console.error(`Stack: ${error.stack}`);
         }
     }
+    return allSuccessful;
 }
 
 fetchAndUploadJSONs()
-    .then(() => {
-        console.log("All JSONs have been processed.");
-        process.exit(0); // Terminar con éxito
+    .then((allSuccessful) => {
+        if (allSuccessful) {
+            console.log("All JSONs have been processed.");
+            process.exit(0); // Terminar con éxito
+        } else {
+            console.error("Some JSONs failed to process.");
+            process.exit(1); // Terminar con error
+        }
     })
     .catch((error) => {
         console.error("Error in main function:");
