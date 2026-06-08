@@ -1,0 +1,54 @@
+# -- Number of successful job runs to retain in history
+successfulJobsHistoryLimit: 2
+# -- Number of failed job runs to retain in history
+failedJobsHistoryLimit: 2
+
+# -- Cron schedule expression (default: daily at 04:00 UTC)
+schedule: "0 4 * * *"
+
+# -- Whether to suspend the CronJob without deleting it
+suspend: false
+
+image:
+  # -- Container image repository
+  repository: ghcr.io/gravitate-health/lenses-connector
+  # -- Image pull policy. Use Always when using mutable tags such as latest
+  pullPolicy: Always
+  # -- Image tag. Defaults to the chart appVersion
+  tag: ""
+
+# -- Image pull secrets for private registries
+imagePullSecrets: []
+
+# -- Annotations to add to the CronJob pod
+podAnnotations:
+  # Disable Istio sidecar injection — this is a batch job with no inbound traffic
+  sidecar.istio.io/inject: "false"
+
+# -- Security context for the pod
+podSecurityContext: {}
+
+# -- Security context for the container
+securityContext: {}
+
+# -- Resource requests and limits for the connector container
+resources: {}
+  # limits:
+  #   cpu: 200m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 64Mi
+
+# -- Node selector for pod scheduling
+nodeSelector: {}
+
+# -- Tolerations for pod scheduling
+tolerations: []
+
+# -- Affinity rules for pod scheduling
+affinity: {}
+
+config:
+  # -- FHIR server Library endpoint
+  serverEndpoint: "http://gravitate-health.lst.tfo.upm.es/epi/api/fhir/Library"

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "lenses-connector.fullname" . }}
+  labels:
+    {{- include "lenses-connector.labels" . | nindent 4 }}
+data:
+  SERVER_ENDPOINT: {{ .Values.config.serverEndpoint | quote }}

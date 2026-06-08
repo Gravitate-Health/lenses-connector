@@ -54,9 +54,48 @@ The image is published to `ghcr.io/gravitate-health/lenses-connector:latest`.
 
 ## Kubernetes Deployment
 
-A CronJob manifest is provided under `kubernetes/dev/cronjob.yaml`. It runs the connector daily at 04:00 UTC.
+A raw CronJob manifest is provided under `kubernetes/dev/cronjob.yaml`. It runs the connector daily at 04:00 UTC.
 
 ```bash
 kubectl apply -f kubernetes/dev/cronjob.yaml
+```
+
+## Helm Deployment
+
+A production-ready Helm chart is available under `charts/lenses-connector/`. It templates the CronJob and ConfigMap with full configurability.
+
+### Deploy via Helm (OCI)
+
+Deploy directly from the GitHub Container Registry without cloning the repository:
+
+```bash
+# Login to the registry (required for private packages)
+helm registry login ghcr.io
+
+# Deploy directly from the OCI registry
+helm install lenses-connector oci://ghcr.io/gravitate-health/charts/lenses-connector --version 0.1.0
+```
+
+Override any default value at install time:
+
+```bash
+helm install lenses-connector oci://ghcr.io/gravitate-health/charts/lenses-connector \
+  --version 0.1.0 \
+  --set config.serverEndpoint=http://my-fhir-server/fhir/Library \
+  --set schedule="0 6 * * *"
+```
+
+### Local Development
+
+```bash
+# Lint the chart
+helm lint charts/lenses-connector
+
+# Render templates locally (dry-run)
+helm template lenses-connector charts/lenses-connector
+
+# Install from local chart
+helm install lenses-connector charts/lenses-connector \
+  --set config.serverEndpoint=http://my-fhir-server/fhir/Library
 ```
 
